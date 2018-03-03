@@ -28,11 +28,20 @@ A machine equiped with
 
 ###### Installation
 
-```yarn```
+```
+# build the lambda
+cd lambda/custom
+yarn
+```
 
 ###### Test
 
-* command: ```yarn test```
+* command:
+```
+# from the lambda directory
+cd lambda/custom # if not already in the directory
+yarn test
+```
 * expected output:
 ```
   Handlers testing
@@ -47,7 +56,9 @@ Tests:       2 passed, 2 total
 
 ##### Deploy
 
-* make a local copy of the [ask config](./docs/data/ask-config-example.json) in the current directory under `.ask/config`
+> Execute the following from the repository root directory
+
+* make a local copy of the [ask config](./docs/data/ask-config-example.json) in the current directory under `.ask/config` (create the .ask directory)
 * update the skill id and lambda arn in the previously created file.
 * `ask-cli deploy`
 

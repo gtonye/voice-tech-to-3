@@ -3,6 +3,7 @@
 
 # IDE
 /lambda/custom/.idea/
+/.idea/
 
 # Node
 /**/node_modules/
