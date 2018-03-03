@@ -1,0 +1,18 @@
+{
+  "status":"ok",
+  "totalResults":20,
+  "articles":[
+    {
+      "source":{
+        "id":"techcrunch",
+        "name":"TechCrunch"
+      },
+      "author":"Jon Russell",
+      "title":"article title",
+      "description":"article description",
+      "url":"http://test.url",
+      "urlToImage":"https://tctechcrunch2011.files.wordpress.com/2017/12/gettyimages-868053350.jpg",
+      "publishedAt":"2018-03-02T08:09:19Z"
+    }
+  ]
+}

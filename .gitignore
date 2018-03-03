@@ -1,0 +1,13 @@
+# Mac OS
+/**/.DS_Store
+
+# IDE
+/lambda/custom/.idea/
+
+# Node
+/**/node_modules/
+/**/yarn.lock
+
+# Ask configuration
+/.ask/
+

@@ -1,0 +1,90 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "tailor news",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "NewsInquiryIntent",
+          "slots": [
+            {
+              "name": "topic",
+              "type": "Topics"
+            }
+          ],
+          "samples": [
+            "{topic}",
+            "what is the word around {topic}",
+            "give me news about {topic}"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "values": [
+            {
+              "id": "123",
+              "name": {
+                "value": "business",
+                "synonyms": [
+                  "biz"
+                ]
+              }
+            },
+            {
+              "id": "245",
+              "name": {
+                "value": "technology",
+                "synonyms": [
+                  "tech"
+                ]
+              }
+            }
+          ],
+          "name": "Topics"
+        }
+      ]
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "NewsInquiryIntent",
+          "confirmationRequired": false,
+          "slots": [
+            {
+              "name": "topic",
+              "type": "Topics",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.567651917215.508969956440"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "prompts": [
+      {
+        "id": "Elicit.Slot.567651917215.508969956440",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "which topic are you interested in today?"
+          }
+        ]
+      }
+    ]
+  }
+}
