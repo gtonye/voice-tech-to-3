@@ -92,7 +92,8 @@ function newsInquiryIntentHandler() {
     })
     .catch((err) => {
       logger.log('Error while looking for the summary of the article: ', err);
-      return this.emit(':tell', 'Sorry something is wrong on my side, please try again in a moment.');
+      this.response.speak('Sorry something is wrong on my side, please try again in a moment.');
+      return this.emit(':responseReady');
     });
 }
 
