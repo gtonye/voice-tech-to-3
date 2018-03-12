@@ -7,6 +7,15 @@ const ALEXA_LAUNCH_REQUEST = require('../data/alexa-launch-request.json');
 const ALEXA_NEWS_INQUIRY_REQUEST = require('../data/alexa-news-inquiry-intent.json');
 const SMMRY_API_SUCCESS_RES = require('../data/smmry-api-success-response.json');
 
+const MOCK_ATTRIBUTES = {
+  'lastIntent': 'NEWS_INQUIRY_INTENT',
+  'lastReadArticle': {
+    'title': 'article title',
+    'url': 'http://test.url',
+    'urlToImage': 'http://url.to.image'
+  }
+};
+
 sinonStubPromise(sinon);
 const mockedFetch = sinon.stub();
 jest.mock('node-fetch', () => mockedFetch);
@@ -98,6 +107,30 @@ describe('Handlers testing', () => {
         });
         expect(mockContextResponseSpeak).not.toHaveBeenCalled();
         expect(mockContext.emit).toHaveBeenCalledWith(':tell', 'Sorry something is wrong on my side, please try again in a moment.');
+
+  describe('AMAZON Yes Intent', () => {
+    it('should return a card with the last read article information when the last intent was a news inquiry', () => {
+      mockContext.attributes = MOCK_ATTRIBUTES;
+
+      const mockContextResponseCardRender = jest.fn();
+      mockContextResponseSpeak.mockImplementation(() => ({
+        'cardRenderer': mockContextResponseCardRender
+      }));
+
+      return handlers['AMAZON.YesIntent'].call(mockContext).then(() => {
+        expect(mockContextResponseSpeak).toHaveBeenCalledWith('All right, I have sent the article to your phone.<break time="0.5s"/>Until I find news again for you. Have a good one.');
+        expect(mockContextResponseCardRender).toHaveBeenCalledWith(
+          'article title',
+          'http://test.url',
+          {
+            'largeImageUrl': 'http://url.to.image',
+            'smallImageUrl': 'http://url.to.image'
+          }
+        );
+        expect(mockContext.emit).toHaveBeenCalledWith(':responseReady');
+      });
+    });
+  });
       });
     });
   });
