@@ -80,6 +80,7 @@ describe('Handlers testing', () => {
       mockTopHeadLines.mockImplementation(() => Promise.resolve(NEWS_API_SUCCESS_1_ARTICLE_RES));
 
       mockContext.event = ALEXA_NEWS_INQUIRY_REQUEST;
+      mockContext.attributes = {};
 
       return handlers.NewsInquiryIntent.call(mockContext)
         .then(() => {
@@ -89,7 +90,7 @@ describe('Handlers testing', () => {
             'country': 'us',
             'pageSize': 1
           });
-          expect(mockContextResponseSpeak).toHaveBeenCalledWith('the top headline is article title<break time="1s"/> Here is the summary:<break time="1s"/>article<break time="1.2s"/>summary');
+          expect(mockContextResponseSpeak).toHaveBeenCalledWith('the top headline is article title<break time="1s"/> Here is the summary:<break time="1s"/>article<break time="1.2s"/>summary<break time="1s"/>would you like me to send the full article to your phone?');
           expect(mockContext.emit).toHaveBeenCalledWith(':responseReady');
         });
     });
