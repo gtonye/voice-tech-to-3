@@ -106,8 +106,11 @@ describe('Handlers testing', () => {
           'country': 'us',
           'pageSize': 1
         });
-        expect(mockContextResponseSpeak).not.toHaveBeenCalled();
-        expect(mockContext.emit).toHaveBeenCalledWith(':tell', 'Sorry something is wrong on my side, please try again in a moment.');
+        expect(mockContextResponseSpeak).toHaveBeenCalledWith('Sorry something is wrong on my side, please try again in a moment.');
+        expect(mockContext.emit).toHaveBeenCalledWith(':responseReady');
+      });
+    });
+  });
 
   describe('AMAZON Yes Intent', () => {
     it('should return a card with the last read article information when the last intent was a news inquiry', () => {
