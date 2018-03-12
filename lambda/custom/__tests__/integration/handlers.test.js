@@ -25,7 +25,7 @@ class mockNewsApi {
   constructor() {
     this.v2 = {
       'topHeadlines': mockTopHeadLines
-    }
+    };
   }
 }
 jest.mock('newsapi', () => mockNewsApi);
@@ -44,9 +44,7 @@ const handlers = require('../../handlers');
 describe('Handlers testing', () => {
   let mockContext;
   const mockContextResponseListen = jest.fn();
-  const mockContextResponseSpeak = jest.fn(() => {
-    return { 'listen': mockContextResponseListen };
-  });
+  const mockContextResponseSpeak = jest.fn(() => ({ 'listen': mockContextResponseListen }));
   beforeEach(() => {
     jest.resetModules();
     mockContextResponseSpeak.mockClear();
@@ -70,7 +68,6 @@ describe('Handlers testing', () => {
   });
 
   describe('News Inquiry Intent', () => {
-
     it('should return the summary of the top article for a category', () => {
       const newsApiUrl = 'http://api.smmry.com?SM_API_KEY=sak-123&SM_WITH_BREAK&SM_LENGTH=1&SM_URL=http://test.url';
       mockedFetch.withArgs(newsApiUrl)
