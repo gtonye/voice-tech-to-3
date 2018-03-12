@@ -13,6 +13,10 @@ const CATEGORIES = [
 
 const SMMRY_API_BASE_URL = `http://api.smmry.com?SM_API_KEY=${config.SMMRY_API_KEY}`;
 
+const INTENT = {
+  'NEWS_INQUIRY_INTENT': 'NEWS_INQUIRY_INTENT'
+};
+
 const replaceAll = (target, search, replacement) => target.replace(new RegExp(search, 'g'), replacement);
 
 const replaceSmmryBreakInText = text => replaceAll(text, '\\[BREAK\\]', '<break time="1.2s"/>');
@@ -86,6 +90,37 @@ function newsInquiryIntentHandler() {
       logger.log('Error while looking for the summary of the article: ', err);
       return this.emit(':tell', 'Sorry something is wrong on my side, please try again in a moment.');
     });
+}
+
+const END_SENTENCE = 'Until I find news again for you. Have a good one.';
+
+function yesIntentHandler() {
+  const lastIntent = _.get(this.attributes, 'lastIntent');
+  if (lastIntent === INTENT.NEWS_INQUIRY_INTENT) {
+    const lastReadArticle = _.get(this.attributes, 'lastReadArticle');
+    const cardTitle = lastReadArticle.title;
+    const cardContent = lastReadArticle.url;
+    const imageObj = {
+      smallImageUrl: lastReadArticle.urlToImage,
+      largeImageUrl: lastReadArticle.urlToImage
+    };
+    this.response
+      .speak(`All right, I have sent the article to your phone.<break time="0.5s"/>${END_SENTENCE}`)
+      .cardRenderer(cardTitle, cardContent, imageObj);
+    this.emit(':responseReady');
+  }
+  return Promise.resolve();
+}
+
+function noIntentHandler() {
+  const lastIntent = _.get(this.attributes, 'lastIntent');
+
+  if (lastIntent === INTENT.NEWS_INQUIRY_INTENT) {
+    this.response
+      .speak(`No problem.<break time="0.5s"/>${END_SENTENCE}`);
+    this.emit(':responseReady');
+  }
+  return Promise.resolve();
 }
 
 module.exports = {
