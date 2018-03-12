@@ -130,5 +130,7 @@ function noIntentHandler() {
 
 module.exports = {
   'LaunchRequest': launchRequestHandler,
-  'NewsInquiryIntent': newsInquiryIntentHandler
+  'NewsInquiryIntent': newsInquiryIntentHandler,
+  'AMAZON.YesIntent': yesIntentHandler,
+  'AMAZON.NoIntent': noIntentHandler
 };
