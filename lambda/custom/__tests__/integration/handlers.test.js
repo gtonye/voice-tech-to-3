@@ -131,6 +131,14 @@ describe('Handlers testing', () => {
       });
     });
   });
+
+  describe('AMAZON No Intent', () => {
+    it('should end the conversation with the end sentence', () => {
+      mockContext.attributes = MOCK_ATTRIBUTES;
+
+      return handlers['AMAZON.NoIntent'].call(mockContext).then(() => {
+        expect(mockContextResponseSpeak).toHaveBeenCalledWith('No problem.<break time="0.5s"/>Until I find news again for you. Have a good one.');
+        expect(mockContext.emit).toHaveBeenCalledWith(':responseReady');
       });
     });
   });
