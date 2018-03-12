@@ -28,6 +28,14 @@
             "what is the word around {topic}",
             "give me news about {topic}"
           ]
+        },
+        {
+          "name": "AMAZON.YesIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NoIntent",
+          "samples": []
         }
       ],
       "types": [
