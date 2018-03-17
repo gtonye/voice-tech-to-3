@@ -80,15 +80,15 @@ function newsInquiryIntentHandler() {
   return getTopHeadLine(topic)
     .then((topHeadlineArticle) => {
       topArticle = topHeadlineArticle;
-      return getArticleSummary(topArticle)
-        .then((topArticleSummary) => {
-          functionContext.attributes.lastIntent = INTENT.NEWS_INQUIRY_INTENT;
-          functionContext.attributes.lastReadArticle = topHeadlineArticle;
-          functionContext.response
-            .speak(`the top headline is ${topArticle.title}<break time="1s"/> Here is the summary:<break time="1s"/>${topArticleSummary}<break time="1s"/>would you like me to send the full article to your phone?`)
-            .listen('would you like to get the full article sent to your phone?');
-          return functionContext.emit(':responseReady');
-        });
+      return getArticleSummary(topArticle);
+    })
+    .then((topArticleSummary) => {
+      functionContext.attributes.lastIntent = INTENT.NEWS_INQUIRY_INTENT;
+      functionContext.attributes.lastReadArticle = topArticle;
+      functionContext.response
+        .speak(`the top headline is ${topArticle.title}<break time="1s"/> Here is the summary:<break time="1s"/>${topArticleSummary}<break time="1s"/>would you like me to send the full article to your phone?`)
+        .listen('would you like to get the full article sent to your phone?');
+      return functionContext.emit(':responseReady');
     })
     .catch((err) => {
       logger.log('Error while looking for the summary of the article: ', err);
