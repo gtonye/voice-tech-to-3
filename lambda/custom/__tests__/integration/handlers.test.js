@@ -43,12 +43,13 @@ const handlers = require('../../handlers');
 
 describe('Handlers testing', () => {
   let mockContext;
-  const mockContextResponseListen = jest.fn();
-  const mockContextResponseSpeak = jest.fn(() => ({ 'listen': mockContextResponseListen }));
+  let mockContextResponseListen;
+  let mockContextResponseSpeak;
   beforeEach(() => {
     jest.resetModules();
-    mockContextResponseSpeak.mockClear();
-    mockContextResponseListen.mockClear();
+    jest.resetAllMocks();
+    mockContextResponseListen = jest.fn();
+    mockContextResponseSpeak = jest.fn(() => ({ 'listen': mockContextResponseListen }));
     mockContext = {
       'emit': jest.fn(),
       'response': {
@@ -88,6 +89,7 @@ describe('Handlers testing', () => {
             'pageSize': 1
           });
           expect(mockContextResponseSpeak).toHaveBeenCalledWith('the top headline is article title<break time="1s"/> Here is the summary:<break time="1s"/>article<break time="1.2s"/>summary<break time="1s"/>would you like me to send the full article to your phone?');
+          expect(mockContextResponseSpeak).toHaveBeenCalledTimes(1);
           expect(mockContext.emit).toHaveBeenCalledWith(':responseReady');
         });
     });
