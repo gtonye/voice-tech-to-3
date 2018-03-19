@@ -63,7 +63,6 @@ function launchRequestHandler() {
 
 function newsInquiryIntentHandler() {
   const topic = _.get(this.event, 'request.intent.slots.topic.resolutions.resolutionsPerAuthority.0.values.0.value.name');
-  const functionContext = this;
 
   if (_.isNil(topic)) {
     const topicInquiry = 'which topic are you interested in today?';
@@ -83,12 +82,12 @@ function newsInquiryIntentHandler() {
       return getArticleSummary(topArticle);
     })
     .then((topArticleSummary) => {
-      functionContext.attributes.lastIntent = INTENT.NEWS_INQUIRY_INTENT;
-      functionContext.attributes.lastReadArticle = topArticle;
-      functionContext.response
+      this.attributes.lastIntent = INTENT.NEWS_INQUIRY_INTENT;
+      this.attributes.lastReadArticle = topArticle;
+      this.response
         .speak(`the top headline is ${topArticle.title}<break time="1s"/> Here is the summary:<break time="1s"/>${topArticleSummary}<break time="1s"/>would you like me to send the full article to your phone?`)
         .listen('would you like to get the full article sent to your phone?');
-      return functionContext.emit(':responseReady');
+      return this.emit(':responseReady');
     })
     .catch((err) => {
       logger.log('Error while looking for the summary of the article: ', err);
