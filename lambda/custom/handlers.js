@@ -13,6 +13,10 @@ const CATEGORIES = [
 
 const SMMRY_API_BASE_URL = `http://api.smmry.com?SM_API_KEY=${config.SMMRY_API_KEY}`;
 
+const INTENT = {
+  'NEWS_INQUIRY_INTENT': 'NEWS_INQUIRY_INTENT'
+};
+
 const replaceAll = (target, search, replacement) => target.replace(new RegExp(search, 'g'), replacement);
 
 const replaceSmmryBreakInText = text => replaceAll(text, '\\[BREAK\\]', '<break time="1.2s"/>');
@@ -59,7 +63,6 @@ function launchRequestHandler() {
 
 function newsInquiryIntentHandler() {
   const topic = _.get(this.event, 'request.intent.slots.topic.resolutions.resolutionsPerAuthority.0.values.0.value.name');
-  const functionContext = this;
 
   if (_.isNil(topic)) {
     const topicInquiry = 'which topic are you interested in today?';
@@ -76,19 +79,57 @@ function newsInquiryIntentHandler() {
   return getTopHeadLine(topic)
     .then((topHeadlineArticle) => {
       topArticle = topHeadlineArticle;
-      return getArticleSummary(topArticle)
-        .then((topArticleSummary) => {
-          functionContext.response.speak(`the top headline is ${topArticle.title}<break time="1s"/> Here is the summary:<break time="1s"/>${topArticleSummary}`);
-          return functionContext.emit(':responseReady');
-        });
+      return getArticleSummary(topArticle);
+    })
+    .then((topArticleSummary) => {
+      this.attributes.lastIntent = INTENT.NEWS_INQUIRY_INTENT;
+      this.attributes.lastReadArticle = topArticle;
+      this.response
+        .speak(`the top headline is ${topArticle.title}<break time="1s"/> Here is the summary:<break time="1s"/>${topArticleSummary}<break time="1s"/>would you like me to send the full article to your phone?`)
+        .listen('would you like to get the full article sent to your phone?');
+      return this.emit(':responseReady');
     })
     .catch((err) => {
       logger.log('Error while looking for the summary of the article: ', err);
-      return this.emit(':tell', 'Sorry something is wrong on my side, please try again in a moment.');
+      this.response.speak('Sorry something is wrong on my side, please try again in a moment.');
+      return this.emit(':responseReady');
     });
+}
+
+const END_SENTENCE = 'Until I find news again for you. Have a good one.';
+
+function yesIntentHandler() {
+  const lastIntent = _.get(this.attributes, 'lastIntent');
+  if (lastIntent === INTENT.NEWS_INQUIRY_INTENT) {
+    const lastReadArticle = _.get(this.attributes, 'lastReadArticle');
+    const cardTitle = lastReadArticle.title;
+    const cardContent = lastReadArticle.url;
+    const imageObj = {
+      smallImageUrl: lastReadArticle.urlToImage,
+      largeImageUrl: lastReadArticle.urlToImage
+    };
+    this.response
+      .speak(`All right, I have sent the article to your phone.<break time="0.5s"/>${END_SENTENCE}`)
+      .cardRenderer(cardTitle, cardContent, imageObj);
+    this.emit(':responseReady');
+  }
+  return Promise.resolve();
+}
+
+function noIntentHandler() {
+  const lastIntent = _.get(this.attributes, 'lastIntent');
+
+  if (lastIntent === INTENT.NEWS_INQUIRY_INTENT) {
+    this.response
+      .speak(`No problem.<break time="0.5s"/>${END_SENTENCE}`);
+    this.emit(':responseReady');
+  }
+  return Promise.resolve();
 }
 
 module.exports = {
   'LaunchRequest': launchRequestHandler,
-  'NewsInquiryIntent': newsInquiryIntentHandler
+  'NewsInquiryIntent': newsInquiryIntentHandler,
+  'AMAZON.YesIntent': yesIntentHandler,
+  'AMAZON.NoIntent': noIntentHandler
 };
